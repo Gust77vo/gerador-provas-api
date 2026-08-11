@@ -39,8 +39,3 @@ jobs:
       - run: npx prisma generate
       - run: npx prisma migrate deploy
       - run: npm test
-
-  # Aula 12: merge só com ✅
-  # Configure em Settings > Branches > Branch protection rules:
-  #   - Require status checks: smoke, test
-  #   - Require branches to be up to date before merging
