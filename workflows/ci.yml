@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'feature/**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke:
+    name: Smoke (check + lint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: smoke
+    if: ${{ vars.ENABLE_TESTS == 'true' }}
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+      NODE_ENV: test
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npx prisma migrate deploy
+      - run: npm test
+
+  # Aula 12: merge só com ✅
+  # Configure em Settings > Branches > Branch protection rules:
+  #   - Require status checks: smoke, test
+  #   - Require branches to be up to date before merging

@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Papel {
+  PROFESSOR
+  ADMIN
+}
+
+enum TipoQuestao {
+  MULTIPLA_ESCOLHA
+  DISSERTATIVA
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  nome         String
+  // v2 breaking change: nome separado em primeiroNome + sobrenome
+  primeiroNome String?
+  sobrenome    String?
+  telefone     String?
+  email        String    @unique
+  senhaHash    String
+  foto         String?
+  papel        Papel     @default(PROFESSOR)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  subjects     Subject[]
+
+  @@map("users")
+}
+
+model Subject {
+  id          Int        @id @default(autoincrement())
+  nome        String
+  descricao   String?
+  professorId Int
+  professor   User       @relation(fields: [professorId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("subjects")
+}
+
+model Question {
+  id            Int         @id @default(autoincrement())
+  enunciado     String
+  tipo          TipoQuestao
+  alternativas  Json?
+  imagemUrl     String?
+  subjectId     Int
+  subject       Subject     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("questions")
+}
