@@ -17,9 +17,17 @@
     "test:watch": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
-    "test:contract": "vitest run tests/contract"
+    "test:contract": "vitest run tests/contract",
+    "test:pratica": "vitest run --exclude tests/swagger.test.js && vitest run tests/swagger.test.js -t Prática",
+    "test:atividade": "vitest run tests/swagger.test.js -t Atividade"
   },
-  "keywords": ["api", "rest", "express", "prisma", "education"],
+  "keywords": [
+    "api",
+    "rest",
+    "express",
+    "prisma",
+    "education"
+  ],
   "author": "Arthur Porto",
   "license": "MIT",
   "dependencies": {
@@ -32,7 +40,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "swagger-jsdoc": "^6.2.8",
+    "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
     "zod": "^3.23.8"
   },
